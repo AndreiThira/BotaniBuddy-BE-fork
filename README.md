@@ -10,6 +10,7 @@ The FrontEnd can be found [here](https://github.com/AndreiThira/BotaniBuddy-FE).
 2. [Deployment](#Deployment)
 3. [Usage Guide](#Installation)
 4. [API Documentation](#APIDocs)
+5. [Acknowledgments](#Ack)
 
 ***
 
@@ -43,21 +44,19 @@ For our database needs, we rely on [MongoDB Atlas](https://www.elephantsql.com/)
 ***
 
 ### Usage Guide <a name="Installation"></a>
-While it's possible to run the Plant Identification and Garden Assistant locally, we recommend using the hosted API for a hassle-free experience. Setting up a local environment with MongoDB and Mongoose can be challenging, and we want to ensure a smooth experience for our users. If you'd like to explore the hosted API, please follow these steps:
+While it's possible to run BotaniBuddy locally, we recommend using the hosted API for a hassle-free experience. Setting up a local environment with MongoDB and Mongoose can be challenging, and we want to ensure a smooth experience for our users. If you'd like to explore the hosted API, please follow these steps:
 
-1. **Visit the Hosted API:** Access the Plant Identification and Garden Assistant at [API Link]((https://tame-blue-horse-tutu.cyclic.cloud/register).
+1. **Visit the Hosted API:** Access the Plant Identification and Garden Assistant at [API Link](https://tame-blue-horse-tutu.cyclic.cloud/register).
 
 2. **Sign Up:** Create an account to get started with your digital garden and plant identification.
 
 3. **Upload Plant Photos:** Take pictures of plants and let our image recognition technology identify them for you.
 
-4. **Manage Your Garden:** Add identified plants to your digital garden and receive daily gardening tasks.
+4. **Manage Your Garden:** Add identified plants to your digital garden and receive a customised list of daily gardening tasks.
 
 ***
 
 ### API Documentation <a name="APIDocs"></a>
-- **Description:** Serves an array of all topics.
-- **Example Response:**
 
 #### `POST /api/register`
 - **Description:** Allows user to register an account using a unique username and a password.
@@ -65,156 +64,147 @@ While it's possible to run the Plant Identification and Garden Assistant locally
   ```json
   {"username": "Bob", "password": "password"}
   ```
+
 - **Example Response:**
-  
+```json
+{
+  "user": {
+    "user_id": "6526a0399326a52638d9a132",
+    "username": "Bob",
+    "password": "$2b$10$fhpv06oN.WJE.Mvbrd3nhOONkyuLbXuJzsKUopa.tATJEBT2/rUXq"
+  }
+}
+```
+
 #### `POST /api/login`
+- **Description:** Allows user to login to an account using their registered username and password.
+- **Example Input:**
+```json
+  {
+	"user": {
+		"msg": "Login succesful",
+		"user_id": "6526a0399326a52638d9a132",
+		"username": "Bob",
+		"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjUyNmEwMzk5MzI2YTUyNjM4ZDlhMTMyIiwidXNlcm5hbWUiOiJCb2IiLCJpYXQiOjE2OTcwMzA3NTUsImV4cCI6MTY5NzExNzE1NX0.DeupW-twqmbchKB_uQGFJdxXZPD-xys9PlzXTHYWVHw"
+	}
+}
+```
 
 #### `POST /api/users/user_id/add_by_search`
+- **Description:** Allows user to add a plant to their garden by name.
+- **Example Input:**
+```json
+{"name": "daisy"}
+```
+
+- **Example Response:**
+```json
+{
+	"plant": {
+		"tasks": {
+			"toBeWateredAgain": "14-10-2023"
+		},
+		"_id": "6526a2fdf6a5ae8c00682b6f",
+		"users": [
+			"6526a0399326a52638d9a132"
+		],
+		"plantType": 924,
+		"__v": 0
+	}
+}
+```
 
 #### `POST /api/users/user_id/identify_plants_image`
+- **Description** Allows a user to upload a plant image for identification, returning the identified plant name and confidence rating.
+- **Example Reponse:**
+```json
+{
+  "score": 0.30212,
+  "plantName": "Araucaria columnaris"
+}
+```
 
 #### `GET /api/users/user_id/plants`
+- **Description:** Returns all the user's owned plants.
+- **Example Response:**
+``` json
+{
+	"myPlants": [
+		"6526a2fdf6a5ae8c00682b6f",
+		"6526a3aaf6a5ae8c00682b75"
+	]
+}
+```
 
 #### `GET /api/users/user_id/plants/plant_id`
+- **Description:** Returns information about a specific plant owned by the user.
+- **Example Response:**
+```json
+{
+	"myPlant": {
+		"wateringPeriod": {
+			"value": "3-4",
+			"unit": "days"
+		},
+		"_id": "651425c9c8ea5f61d76f184a",
+		"perenualId": 924,
+		"commonName": "African daisy",
+		"scientificName": "Arctotis hybrida",
+		"maxHeight": "0 feet",
+		"wateringFrequency": "Average",
+		"sunlight": [
+			"Full sun"
+		],
+		"pruningMonth": [
+			"May",
+			"June",
+			"July",
+			"June",
+			"July",
+			"August",
+			"March",
+			"April",
+			"May"
+		],
+		"maintenance": "Moderate",
+		"poisonousToHumans": false,
+		"poisonousToPets": false,
+		"rareLevel": 0,
+		"indoor": false,
+		"description": "The African daisy (Arctotis hybrida) is an amazing specimen of flower, with stunning white and orange petals that spread wide and proud. Perfect for both the garden bed and vase, the African daisy will bring a touch of sunshine to any spot. Along with its showy flowers, this species produces a sweet, strong scent that will linger in the air. Easy to grow and maintain, African daisies are an ideal choice for any garden. A true symbol of beauty and life, the African daisy is an amazing way to brighten any space.",
+		"__v": 0
+	}
+}
+```
 
 #### `GET /api/users/user_id/tasks`
+- **Description:** Returns a list of the user's tasks that need to be completed today. Returns empty array if nothing needs completing today.
+- **Example Response:**
+  ```{
+	"tasks": []
+}
 
 #### `PATCH /api/users/user_id/tasks/plant_id`
-
-
-```json
-{
-  "topics": [
-    {
-      "slug": "coding",
-      "description": "Code is love, code is life"
-    },
-    {
-      "slug": "football",
-      "description": "FOOTIE!"
-    },
-    {
-      "slug": "cooking",
-      "description": "Hey good looking, what you got cooking?"
-    }
-  ]
-}
-```
-
-#### `GET /api/articles`
-
-- **Description:** Serves an array of all articles.
+- **Description:** Returns the updated plant with the next watering date.
 - **Example Response:**
-```json
+```json 
 {
-  "articles": [
-    {
-      "title": "Seafood substitutions are increasing",
-      "topic": "cooking",
-      "author": "weegembump",
-      "body": "Text from the article..",
-      "created_at": "2018-05-30T15:59:13.341Z",
-      "votes": 0,
-      "comment_count": 6
-    }
-  ]
+	"nextWaterDate": {
+		"tasks": {
+			"toBeWateredAgain": "14-10-2023"
+		},
+		"_id": "6526a2fdf6a5ae8c00682b6f",
+		"users": [
+			"6526a0399326a52638d9a132"
+		],
+		"plantType": 924,
+		"__v": 0
+	}
 }
 ```
+***
+### Acknowledgments <a name="Ack"></a>
+- [PlantNet](https://plantnet.org/en/) for the image identification API
+- [Perenual](https://perenual.com/docs/api) for the plant care information API.
 
-#### `GET /api/articles/:article_id`
 
-- **Description:** Serves the article with the corresponding `article_id`.
-- **Example Response:**
-
-```json
-{
-  "article": [
-    {
-      "article_id": 3,
-      "title": "Eight pug gifs that remind me of mitch",
-      "topic": "mitch",
-      "author": "icellusedkars",
-      "body": "some gifs",
-      "created_at": "2020-11-03T09:12:00.000Z",
-      "votes": 0,
-      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-    }
-  ]
-}
-```
-
-#### `GET /api/articles/:article_id/comments`
-
-- **Description:** Serves all comments for the corresponding `article_id`, sorted by most recent.
-- **Example Response:**
-
-```json
-{
-  "comments": [
-    {
-      "body": "This morning, I showered for nine minutes.",
-      "votes": 16,
-      "author": "butter_bridge",
-      "article_id": 1,
-      "created_at": "2020-12-03T09:12:00.000Z",
-      "comment_id": 12
-    }
-  ]
-}
-```
-
-#### `POST /api/articles/:article_id/comments`
-
-- **Description:** Allows the client to post a comment to a specific article, then serves the new comment.
-- **Example Input:**
-
-```json
-{
-  "body": "This morning, I showered for nine minutes.",
-  "user": "butter_bridge"
-}
-```
-- **Example Output:**
-
-```json
-{
-  "comment": [
-    {
-      "body": "This morning, I showered for nine minutes.",
-      "votes": 16,
-      "author": "butter_bridge",
-      "article_id": 1,
-      "created_at": "2020-12-03T09:12:00.000Z",
-      "comment_id": 12
-    }
-  ]
-}
-```
-
-#### `PATCH /api/articles/:article_id`
-
-- **Description:** Allows the client to update votes by a certain value.
-- **Example Input:**
-
-```json
-{
-  "inc_votes": 12
-}
-```
-- **Example Output:**
-```json
-{
-  "article": [
-    {
-      "article_id": 3,
-      "title": "Eight pug gifs that remind me of mitch",
-      "topic": "mitch",
-      "author": "icellusedkars",
-      "body": "some gifs",
-      "created_at": "2020-11-03T09:12:00.000Z",
-      "votes": 12,
-      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-    }
-  ]
-}
-```
